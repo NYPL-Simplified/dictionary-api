@@ -1,0 +1,1 @@
+# Library Simplified Dictionary API
