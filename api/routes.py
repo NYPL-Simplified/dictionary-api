@@ -17,8 +17,8 @@ def setup():
   setup_controllers(app.manager)
 
 @app.route("/<word>/definition/<language>/", methods=["GET"])
-def definition(word, language="English"):
-  definitions = app.manager.dictionary_controller.definition(word, language="English")
+def definition(word, language):
+  definitions = app.manager.dictionary_controller.definition(word, language)
   return jsonify(definitions)
 
 @app.route("/<word>/translation/<language_from>/", methods=["GET"])

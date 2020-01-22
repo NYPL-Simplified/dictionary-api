@@ -1,6 +1,6 @@
 import logging
 from elasticsearch import Elasticsearch
-from pdb import set_trace
+from nose.tools import set_trace
 
 class ExternalSearchIndex():
   DEFAULT_INDEX = 'dictionary'
@@ -27,7 +27,6 @@ class ExternalSearchIndex():
   def insert_doc(self, doc):
     self.index(self.DEFAULT_INDEX, self.DEFAULT_TYPE, body=doc)
 
-
   def search_doc(self, word, language="English"):
     results = self.search(
       index=self.DEFAULT_INDEX, doc_type=self.DEFAULT_TYPE,
@@ -40,4 +39,19 @@ class ExternalSearchIndex():
     data = [hit['_source'] for hit in results['hits']['hits']]
 
     return data
+
+class MockExternalSearchIndex(ExternalSearchIndex):
+  def __init__(self):
+    self.docs = {}
+    self.log = logging.getLogger("Mock External Search Index")
+    self.search = self.docs.keys()
+  
+  def _key(self, index, doc_type):
+    return (index, doc_type)
+  
+  def index(self, index, doc_type, body):
+    self.docs[self._key(index, doc_type)] = body
+  
+  def clean_results(self, results):
+    return results
 
