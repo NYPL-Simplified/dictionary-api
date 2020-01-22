@@ -1,8 +1,4 @@
-from nose.tools import (
-    assert_raises,
-    eq_,
-    set_trace,
-)
+from nose.tools import set_trace
 import flask
 import logging
 from ..elastic_search import ExternalSearchIndex
