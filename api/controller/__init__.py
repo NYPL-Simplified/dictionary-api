@@ -1,4 +1,4 @@
-from pdb import set_trace
+from nose.tools import set_trace
 import flask
 import logging
 from ..elastic_search import ExternalSearchIndex

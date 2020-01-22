@@ -1,4 +1,4 @@
-from pdb import set_trace
+from nose.tools import set_trace
 
 class Dictionary(object):
   def __init__(self, external_search):
@@ -17,10 +17,19 @@ class Dictionary(object):
     senses = [word['senses'] for word in words]
     definitions = []
     for sense in senses:
-      defs = [s['glosses'][0] for s in sense]
-      definitions += defs
+      definitions += sense
 
     return definitions
 
   def translation(self, word, language_from):
     return NotImplemented
+
+class MockDictionary(Dictionary):
+  def definition(self, word, language="English"):
+    return dict(
+      word=word,
+      definitions=[
+        dict(glosses=["first definition"]),
+        dict(glosses=["second definition"], tags=["transitive"])
+      ]
+    )

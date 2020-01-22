@@ -4,8 +4,8 @@ from flask import (
   Response,
 )
 from flask_babel import lazy_gettext as _
-from pdb import set_trace
-from .app import app
+from nose.tools import set_trace
+from api.app import app
 from api.controller import (
   setup_controllers,
   Manager,
@@ -17,8 +17,8 @@ def setup():
   setup_controllers(app.manager)
 
 @app.route("/<word>/definition/<language>/", methods=["GET"])
-def definition(word, language="English"):
-  definitions = app.manager.dictionary_controller.definition(word, language="English")
+def definition(word, language):
+  definitions = app.manager.dictionary_controller.definition(word, language)
   return jsonify(definitions)
 
 @app.route("/<word>/translation/<language_from>/", methods=["GET"])

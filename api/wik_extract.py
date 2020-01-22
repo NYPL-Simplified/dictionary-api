@@ -1,5 +1,5 @@
 import json
-from pdb import set_trace
+from nose.tools import set_trace
 import wiktextract
 from datetime import datetime
 
@@ -8,7 +8,7 @@ from .elastic_search import ExternalSearchIndex
 class WiktionaryExtract(object):
     def __init__(self, url=None):
         self.external_search = ExternalSearchIndex()
-        self.url = url or './data/enwiktionary-latest-pages-articles.xml.bz2'
+        self.url = url
 
     def run(self):
         ctx = wiktextract.parse_wiktionary(
