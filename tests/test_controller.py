@@ -17,9 +17,9 @@ from api.elastic_search import ExternalSearchIndex
 
 class TestController(object):
   def setup(self):
+    app.manager = Manager()
+    app.manager.dictionary_controller = MockDictionary(ExternalSearchIndex)
     self.app = app
-    self.manager = Manager()
-    self.manager.dictionary_controller = MockDictionary(ExternalSearchIndex)
 
 class TestManager(object):
   def test_init(self):

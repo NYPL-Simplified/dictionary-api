@@ -1,5 +1,5 @@
 import json
-from pdb import set_trace
+from nose.tools import set_trace
 import wiktextract
 from datetime import datetime
 

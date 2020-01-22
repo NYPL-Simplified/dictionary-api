@@ -4,8 +4,8 @@ from flask import (
   Response,
 )
 from flask_babel import lazy_gettext as _
-from pdb import set_trace
-from .app import app
+from nose.tools import set_trace
+from api.app import app
 from api.controller import (
   setup_controllers,
   Manager,
