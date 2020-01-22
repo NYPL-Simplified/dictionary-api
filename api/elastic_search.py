@@ -33,9 +33,9 @@ class ExternalSearchIndex():
       body={'query': {'match': { 'word': word}}}
     )
 
-    return self.clean_results(results)
+    return self.get_hits(results)
 
-  def clean_results(self, results):
+  def get_hits(self, results):
     data = [hit['_source'] for hit in results['hits']['hits']]
 
     return data
@@ -44,14 +44,19 @@ class MockExternalSearchIndex(ExternalSearchIndex):
   def __init__(self):
     self.docs = {}
     self.log = logging.getLogger("Mock External Search Index")
-    self.search = self.docs.keys()
   
-  def _key(self, index, doc_type):
-    return (index, doc_type)
+  def _key(self, index, doc_type, word):
+    return (index, doc_type, word)
   
   def index(self, index, doc_type, body):
-    self.docs[self._key(index, doc_type)] = body
+    self.docs[self._key(index, doc_type, body['word'])] = body
   
-  def clean_results(self, results):
+  def search(self, index, doc_type, body):
+    word = body['query']['match']['word']
+    key = (self.DEFAULT_INDEX, self.DEFAULT_TYPE, word)
+    
+    return self.docs.get(key, {})
+  
+  def get_hits(self, results):
     return results
 

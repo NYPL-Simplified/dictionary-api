@@ -16,20 +16,26 @@ class TestExternalSearchIndex():
     self.es = MockExternalSearchIndex()
 
   def test_insert_doc(self):
-    doc = {"id": 1, "word": "cat", "definitions": ["feline", "domestic animal"]}
-    doc2 = {"id": 2, "word": "dog", "definitions": ["bark"]}
+    doc = {"word": "cat", "lang": "English",
+      "senses": [{"glosses": ["feline"]}, {"glosses": ["domestic animal"]}]}
+    doc2 = {"word": "dog", "lang": "English",
+      "senses": [{"glosses": ["bark"]}]}
     self.es.insert_doc(doc)
     self.es.insert_doc(doc2)
 
     eq_(self.es.docs, {
-      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, doc["id"]): doc,
-      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, doc2["id"]): doc2,
+      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, doc['word']): doc,
+      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, doc2['word']): doc2,
     })
 
   def test_search_doc(self):
-    doc = {"id": 1, "word": "cat", "definitions": ["feline", "domestic animal"]}
-    doc2 = {"id": 2, "word": "dog", "definitions": ["bark"]}
+    doc = {"word": "cat", "lang": "English",
+      "senses": [{"glosses": ["feline"]}, {"glosses": ["domestic animal"]}]}
+    doc2 = {"word": "dog", "lang": "English",
+      "senses": [{"glosses": ["bark"]}]}
     self.es.insert_doc(doc)
     self.es.insert_doc(doc2)
 
     eq_(self.es.search_doc("cat"), doc)
+    eq_(self.es.search_doc("dog"), doc2)
+    eq_(self.es.search_doc("bird"), {})
