@@ -7,15 +7,15 @@ class ExternalSearchIndex():
   DEFAULT_TYPE = 'words'
   __client = None
 
-  def __init__(self):
+  def __init__(self, url):
     self.log = logging.getLogger("External search index")
 
     if not ExternalSearchIndex.__client:
       self.log.info(
         "Connecting to index %s in Elasticsearch cluster at %s",
-        self.DEFAULT_INDEX, 'localhost:9200'
+        self.DEFAULT_INDEX, url
       )
-      ExternalSearchIndex.__client =  Elasticsearch([{'host': 'localhost', 'port': 9200}])
+      ExternalSearchIndex.__client = Elasticsearch([url])
 
     self.indices = self.__client.indices
     self.index = self.__client.index
@@ -41,7 +41,8 @@ class ExternalSearchIndex():
     return data
 
 class MockExternalSearchIndex(ExternalSearchIndex):
-  def __init__(self):
+  def __init__(self, url):
+    self.url = url
     self.docs = {}
     self.log = logging.getLogger("Mock External Search Index")
   

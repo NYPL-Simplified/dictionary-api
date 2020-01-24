@@ -4,7 +4,7 @@ from nose.tools import (
   assert_is_instance
 )
 from api.app import app
-from api.controller import (
+from api.controller.manager import (
   Manager,
   setup_controllers,
 )
@@ -16,8 +16,9 @@ from api.elastic_search import MockExternalSearchIndex
 
 class TestController(object):
   def setup(self):
+    es_url = app.config["ELASTIC_SEARCH_URL"]
     app.manager = Manager()
-    app.manager.dictionary_controller = Dictionary(MockExternalSearchIndex)
+    app.manager.dictionary_controller = Dictionary(MockExternalSearchIndex, es_url)
     self.app = app
 
     self.example_results = []

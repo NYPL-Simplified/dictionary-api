@@ -2,10 +2,12 @@ import json
 from nose.tools import set_trace
 import wiktextract
 from datetime import datetime
+from .app import app
 
 class WiktionaryExtract(object):
     def __init__(self, url, external_search, wiktextract=wiktextract):
-        self.external_search = external_search()
+        es_url = app.config["ELASTIC_SEARCH_URL"]
+        self.external_search = external_search(es_url)
         self.wiktextract = wiktextract
         self.url = url
 

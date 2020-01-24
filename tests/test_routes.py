@@ -8,26 +8,21 @@ from nose.tools import (
     eq_,
     set_trace,
 )
-
-from api.controller import (
-  Manager,
-  setup_controllers,
-)
 from api import routes
 from .test_controller import TestController
 
-class TestIndex(TestController):
+class TestRoutes(TestController):
   def setup(self):
-    super(TestIndex, self).setup()
+    super(TestRoutes, self).setup()
 
     self.test_client = self.app.test_client(self)
     self.routes = routes
     self.resolver = self.app.url_map.bind('', '/')
 
   def request(self, url, method='GET'):
-    """Simulate a request to a URL without triggering any code outside
-    routes.py. Borrowed from circulation.
-    """
+    # Simulate a request to a URL without triggering any code outside
+    # routes.py. Borrowed from circulation.
+
     function_name, kwargs = self.resolver.match(url, method)
     # Locate the corresponding function
     mock_function = getattr(self.routes, function_name)

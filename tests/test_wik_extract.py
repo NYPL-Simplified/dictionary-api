@@ -18,6 +18,7 @@ class MockWiktExtract(object):
 
 class TestWiktionaryExtract(object):
   def test_run_no_url(self):
+    # A ValueError is raised if no url was passed.
     wiktionaryExtract = WiktionaryExtract(None, ExternalSearchIndex)
 
     assert_raises(ValueError, wiktionaryExtract.run)
@@ -43,7 +44,13 @@ class TestWiktionaryExtract(object):
       'redirects': False
     })
 
-  def test_wiktexttract_word_cb(self):
+  def test_wiktextract_word_cb(self):
+    # The wiktextract_word_cb function is the callback function that
+    # wiktextract uses for each word document. In our case, it is used to
+    # insert documents into Elastic Search. Here we want to make sure
+    # that when it is called, that the Elastic Search instance stores
+    # the documents.
+
     mockWiktExtract = MockWiktExtract()
     wiktionaryExtract = WiktionaryExtract(
       "some-url",
@@ -61,6 +68,8 @@ class TestWiktionaryExtract(object):
       ('dictionary', 'words', 'cat'): doc,
     })
 
+    # Every time the wiktextract_word_cd function is called, the new
+    # document is stored.
     wiktionaryExtract.wiktextract_word_cb(doc2)
     all_docs = mockExternalSearchIndex.docs
 

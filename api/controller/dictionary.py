@@ -1,8 +1,8 @@
 from nose.tools import set_trace
 
 class Dictionary(object):
-  def __init__(self, external_search):
-    self.external_search = external_search()
+  def __init__(self, external_search, es_url):
+    self.external_search = external_search(es_url)
 
   def definition(self, word, language="English"):
     results = self.external_search.search_for(word, language)

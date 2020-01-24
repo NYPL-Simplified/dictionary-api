@@ -6,23 +6,26 @@ from api.controller.dictionary import (
   Dictionary,
 )
 from api.elastic_search import MockExternalSearchIndex
+from api.app import app
 
 class TestDictionary(object):
   def setup(self):
-    self.dictionary = Dictionary(MockExternalSearchIndex)
+    es_url = app.config["ELASTIC_SEARCH_URL"]
+    self.dictionary = Dictionary(MockExternalSearchIndex, es_url)
     external_search = self.dictionary.external_search
     # Insert documents into the test Elastic Search instance
     for doc in external_search.elastic_search_results():
       external_search.insert(doc)
 
   def test_definition(self):
-    # Get the example search result for word 'dictionary'
+    # Get the example search result for word 'dictionary'.
     (ignore, ignore2, ignore3, doc) = self.dictionary.external_search.elastic_search_results()
     definitions = doc["senses"]
+    word = 'dictionary'
 
     eq_(
-      self.dictionary.definition('dictionary'),
-      dict(word="dictionary", definitions=definitions)
+      self.dictionary.definition(word),
+      dict(word=word, definitions=definitions)
     )
 
   def test_combine_definitions(self):
