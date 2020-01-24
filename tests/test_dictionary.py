@@ -1,26 +1,38 @@
 from nose.tools import (
-  assert_raises,
   eq_,
   set_trace,
-  assert_is_instance
 )
 from api.controller.dictionary import (
-  MockDictionary,
+  Dictionary,
 )
-from api.elastic_search import ExternalSearchIndex
+from api.elastic_search import MockExternalSearchIndex
 
 class TestDictionary(object):
   def setup(self):
-    self.dictionary = MockDictionary(ExternalSearchIndex)
-
-  def test_combine_definitions(self):
-    pass
+    self.dictionary = Dictionary(MockExternalSearchIndex)
+    external_search = self.dictionary.external_search
+    # Insert documents into the test Elastic Search instance
+    for doc in external_search.elastic_search_results():
+      external_search.insert(doc)
 
   def test_definition(self):
-    eq_(self.dictionary.definition('test'), dict(
-      word="test",
-      definitions=[
-        dict(glosses=["first definition"]),
-        dict(glosses=["second definition"], tags=["transitive"])
-      ]
-    ))
+    # Get the example search result for word 'dictionary'
+    (ignore, ignore2, ignore3, doc) = self.dictionary.external_search.elastic_search_results()
+    definitions = doc["senses"]
+
+    eq_(
+      self.dictionary.definition('dictionary'),
+      dict(word="dictionary", definitions=definitions)
+    )
+
+  def test_combine_definitions(self):
+    # Mock set of Elastic Search results for word 'dictionary'.
+    (ignore, ignore2, doc, doc2) = self.dictionary.external_search.elastic_search_results()
+    example_combined = doc["senses"] + doc2["senses"]
+
+    # We just want the actual definitions for a word and not the
+    # other values in a search result hit.
+    definitions = self.dictionary.combine_definitions([doc, doc2])
+
+    eq_(definitions, example_combined)
+

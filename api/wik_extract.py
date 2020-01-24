@@ -3,15 +3,17 @@ from nose.tools import set_trace
 import wiktextract
 from datetime import datetime
 
-from .elastic_search import ExternalSearchIndex
-
 class WiktionaryExtract(object):
-    def __init__(self, url=None):
-        self.external_search = ExternalSearchIndex()
+    def __init__(self, url, external_search, wiktextract=wiktextract):
+        self.external_search = external_search()
+        self.wiktextract = wiktextract
         self.url = url
 
     def run(self):
-        ctx = wiktextract.parse_wiktionary(
+        if self.url is None:
+            raise ValueError("No 'url' value is set")
+
+        ctx = self.wiktextract.parse_wiktionary(
             self.url,
             self.wiktextract_word_cb,
             capture_cb=None,
@@ -25,9 +27,10 @@ class WiktionaryExtract(object):
 
     def wiktextract_word_cb(self, word, *args, **kwargs):
         self.clean_word(word)
-        self.external_search.insert_doc(word)
+        self.external_search.insert(word)
 
     def clean_word(self, word):
+        # Remove all but Arabic and Spanish translations
         if 'translations' in word:
             word['translations'] = [
                 t for t in x['translations'] if t['lang'] in ('ar', 'es')

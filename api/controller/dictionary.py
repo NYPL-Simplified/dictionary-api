@@ -5,7 +5,8 @@ class Dictionary(object):
     self.external_search = external_search()
 
   def definition(self, word, language="English"):
-    results = self.external_search.search_doc(word, language)
+    results = self.external_search.search_for(word, language)
+    
     definitions = self.combine_definitions(results)
 
     return dict(
@@ -26,10 +27,11 @@ class Dictionary(object):
 
 class MockDictionary(Dictionary):
   def definition(self, word, language="English"):
+    # Mock a set of elastic search results for word 'dictionary'.
+    results = self.external_search.elastic_search_results()
+    definitions = self.combine_definitions(results)
+
     return dict(
       word=word,
-      definitions=[
-        dict(glosses=["first definition"]),
-        dict(glosses=["second definition"], tags=["transitive"])
-      ]
+      definitions=definitions
     )

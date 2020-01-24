@@ -24,10 +24,10 @@ class ExternalSearchIndex():
     self.search = self.__client.search
     self.work_alias = "dictionary-words"
   
-  def insert_doc(self, doc):
+  def insert(self, doc):
     self.index(self.DEFAULT_INDEX, self.DEFAULT_TYPE, body=doc)
 
-  def search_doc(self, word, language="English"):
+  def search_for(self, word, language="English"):
     results = self.search(
       index=self.DEFAULT_INDEX, doc_type=self.DEFAULT_TYPE,
       body={'query': {'match': { 'word': word}}}
@@ -55,8 +55,14 @@ class MockExternalSearchIndex(ExternalSearchIndex):
     word = body['query']['match']['word']
     key = (self.DEFAULT_INDEX, self.DEFAULT_TYPE, word)
     
-    return self.docs.get(key, {})
-  
+    return [self.docs.get(key, {})]
+
   def get_hits(self, results):
     return results
 
+  def elastic_search_results(self):
+    doc = {"word": "cat", "lang": "English", "senses": [{"glosses": ["feline"]}, {"glosses": ["domestic animal"]}]}
+    doc2 = {"word": "dog", "lang": "English", "senses": [{"glosses": ["bark"]}]}
+    doc3 = {"lang": "English", "senses": [{"glosses": ["A reference work with a list of words from one or more languages, normally ordered alphabetically, explaining each word's meaning, and sometimes containing information on its etymology, pronunciation, usage, translations, and other data."]}, {'glosses': ['Any work that has a list of material organized alphabetically; e.g., biographical dictionary, encyclopedic dictionary.'], 'tags': ['by extension']}, {'glosses': ['An associative array, a data structure where each value is referenced by a particular key, analogous to words and definitions in a physical dictionary.'], 'tags': ['computing']}], 'word': 'dictionary', 'pos': 'noun'}
+    doc4 = {"lang": "English", "senses": [{"glosses": ["To look up in a dictionary."], "tags": ["transitive"]}, {"glosses": ["To add to a dictionary."], "tags": ["transitive"]}, {"glosses": ["To compile a dictionary."], "tags": ["rare", "intransitive"]}, {"glosses": ["To appear in a dictionary."], "tags": ["intransitive"]}], "word": "dictionary", "pos": "verb"}
+    return (doc, doc2, doc3, doc4)

@@ -5,7 +5,6 @@ from flask import (
 )
 from flask_babel import lazy_gettext as _
 from nose.tools import (
-    assert_raises,
     eq_,
     set_trace,
 )
@@ -38,15 +37,28 @@ class TestIndex(TestController):
       return mock_function(**kwargs)
 
   def test_definition(self):
-    url = '/test/definition/english/'
+    url = '/cat/definition/english/'
 
     response = self.request(url)
     data = json.loads(response.data)
 
-    eq_(data['word'], 'test')
+    eq_(data['word'], 'cat')
+    eq_(data['definitions'], [{"glosses": ["feline"]}, {"glosses": ["domestic animal"]}])
+    assert response.status_code == 200
+
+
+    url = '/dictionary/definition/english/'
+
+    response = self.request(url)
+    data = json.loads(response.data)
+
+    eq_(data['word'], 'dictionary')
     eq_(data['definitions'], [
-      dict(glosses=["first definition"]),
-      dict(glosses=["second definition"], tags=["transitive"])
-    ])
+        {"glosses": ["To look up in a dictionary."], "tags": ["transitive"]},
+        {"glosses": ["To add to a dictionary."], "tags": ["transitive"]},
+        {"glosses": ["To compile a dictionary."], "tags": ["rare", "intransitive"]},
+        {"glosses": ["To appear in a dictionary."], "tags": ["intransitive"]}
+      ]
+    )
     assert response.status_code == 200
 
