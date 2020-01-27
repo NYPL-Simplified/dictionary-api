@@ -1,11 +1,12 @@
 from nose.tools import set_trace
 
 class Dictionary(object):
-  def __init__(self, external_search):
-    self.external_search = external_search()
+  def __init__(self, external_search, es_url):
+    self.external_search = external_search(es_url)
 
   def definition(self, word, language="English"):
-    results = self.external_search.search_doc(word, language)
+    results = self.external_search.search_for(word, language)
+    
     definitions = self.combine_definitions(results)
 
     return dict(
@@ -26,10 +27,11 @@ class Dictionary(object):
 
 class MockDictionary(Dictionary):
   def definition(self, word, language="English"):
+    # Mock a set of elastic search results for word 'dictionary'.
+    results = self.external_search.elastic_search_results()
+    definitions = self.combine_definitions(results)
+
     return dict(
       word=word,
-      definitions=[
-        dict(glosses=["first definition"]),
-        dict(glosses=["second definition"], tags=["transitive"])
-      ]
+      definitions=definitions
     )

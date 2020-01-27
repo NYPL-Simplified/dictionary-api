@@ -6,7 +6,7 @@ from flask import (
 from flask_babel import lazy_gettext as _
 from nose.tools import set_trace
 from api.app import app
-from api.controller import (
+from api.controller.manager import (
   setup_controllers,
   Manager,
 )

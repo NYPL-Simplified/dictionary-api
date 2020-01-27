@@ -6,10 +6,11 @@ bin_dir = os.path.split(__file__)[0]
 package_dir = os.path.join(bin_dir, "..")
 sys.path.append(os.path.abspath(package_dir))
 from api.wik_extract import WiktionaryExtract
+from api.elastic_search import ExternalSearchIndex
 
 if not len(sys.argv) > 1:
   print("Error: Path to the wiktionary data is missing.")
   sys.exit(0)
 
 url = sys.argv[1]
-WiktionaryExtract(url).run()
+WiktionaryExtract(url, ExternalSearchIndex).run()

@@ -5,30 +5,24 @@ from flask import (
 )
 from flask_babel import lazy_gettext as _
 from nose.tools import (
-    assert_raises,
     eq_,
     set_trace,
-)
-
-from api.controller import (
-  Manager,
-  setup_controllers,
 )
 from api import routes
 from .test_controller import TestController
 
-class TestIndex(TestController):
+class TestRoutes(TestController):
   def setup(self):
-    super(TestIndex, self).setup()
+    super(TestRoutes, self).setup()
 
     self.test_client = self.app.test_client(self)
     self.routes = routes
     self.resolver = self.app.url_map.bind('', '/')
 
   def request(self, url, method='GET'):
-    """Simulate a request to a URL without triggering any code outside
-    routes.py. Borrowed from circulation.
-    """
+    # Simulate a request to a URL without triggering any code outside
+    # routes.py. Borrowed from circulation.
+
     function_name, kwargs = self.resolver.match(url, method)
     # Locate the corresponding function
     mock_function = getattr(self.routes, function_name)
@@ -38,15 +32,28 @@ class TestIndex(TestController):
       return mock_function(**kwargs)
 
   def test_definition(self):
-    url = '/test/definition/english/'
+    url = '/cat/definition/english/'
 
     response = self.request(url)
     data = json.loads(response.data)
 
-    eq_(data['word'], 'test')
+    eq_(data['word'], 'cat')
+    eq_(data['definitions'], [{"glosses": ["feline"]}, {"glosses": ["domestic animal"]}])
+    assert response.status_code == 200
+
+
+    url = '/dictionary/definition/english/'
+
+    response = self.request(url)
+    data = json.loads(response.data)
+
+    eq_(data['word'], 'dictionary')
     eq_(data['definitions'], [
-      dict(glosses=["first definition"]),
-      dict(glosses=["second definition"], tags=["transitive"])
-    ])
+        {"glosses": ["To look up in a dictionary."], "tags": ["transitive"]},
+        {"glosses": ["To add to a dictionary."], "tags": ["transitive"]},
+        {"glosses": ["To compile a dictionary."], "tags": ["rare", "intransitive"]},
+        {"glosses": ["To appear in a dictionary."], "tags": ["intransitive"]}
+      ]
+    )
     assert response.status_code == 200
 
