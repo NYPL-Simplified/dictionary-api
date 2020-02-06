@@ -1,19 +1,32 @@
 from nose.tools import set_trace
+from core.util.opds_writer import (
+  OPDSFeed
+)
+from api.opds import DictionaryFeed
 
 class Dictionary(object):
   def __init__(self, external_search, es_url):
     self.external_search = external_search(es_url)
 
-  def definition(self, word, language="English"):
+  def _search(self, word, language):
+    '''Searches ES for definitions based on word and language.
+
+    :param word: word to define
+    :param language: the language of the word
+    :return: a list of definition objects with 'glosses' and 'tags' properties
+    '''
     results = self.external_search.search_for(word, language)
     
     definitions = self.combine_definitions(results)
 
-    return dict(
-      word=word,
-      definitions=definitions,
-    )
+    return definitions
   
+  def definition(self, word, language="English"):
+    definitions = self._search(word, language)
+    feed = DictionaryFeed(word, language)
+
+    return feed.get_feed(definitions)
+
   def combine_definitions(self, words):
     senses = [word['senses'] for word in words]
     definitions = []
