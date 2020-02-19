@@ -10,6 +10,7 @@ from api.controller.manager import (
   setup_controllers,
   Manager,
 )
+from opds.feed_response import feed_response
 
 @app.before_first_request
 def setup():
@@ -18,8 +19,9 @@ def setup():
 
 @app.route("/<word>/definition/<language>/", methods=["GET"])
 def definition(word, language):
-  definitions = app.manager.dictionary_controller.definition(word, language)
-  return jsonify(definitions)
+  feed = app.manager.dictionary_controller.definition(word, language)
+
+  return feed_response(feed)
 
 @app.route("/<word>/translation/<language_from>/", methods=["GET"])
 def translation(word, language_from):

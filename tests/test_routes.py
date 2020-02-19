@@ -37,8 +37,11 @@ class TestRoutes(TestController):
     response = self.request(url)
     data = json.loads(response.data)
 
-    eq_(data['word'], 'cat')
-    eq_(data['definitions'], [{"glosses": ["feline"]}, {"glosses": ["domestic animal"]}])
+    eq_(data['metadata']['name'], 'cat')
+    eq_(data['definitions'], [
+      {"metadata": "feline", "tags": [], 'pos': None},
+      {"metadata": "domestic animal", "tags": [], 'pos': None}
+    ])
     assert response.status_code == 200
 
 
@@ -47,12 +50,12 @@ class TestRoutes(TestController):
     response = self.request(url)
     data = json.loads(response.data)
 
-    eq_(data['word'], 'dictionary')
+    eq_(data['metadata']['name'], 'dictionary')
     eq_(data['definitions'], [
-        {"glosses": ["To look up in a dictionary."], "tags": ["transitive"]},
-        {"glosses": ["To add to a dictionary."], "tags": ["transitive"]},
-        {"glosses": ["To compile a dictionary."], "tags": ["rare", "intransitive"]},
-        {"glosses": ["To appear in a dictionary."], "tags": ["intransitive"]}
+        {"metadata": "To look up in a dictionary.", 'pos': 'verb', "tags": ["transitive"]},
+        {"metadata": "To add to a dictionary.", 'pos': 'verb', "tags": ["transitive"]},
+        {"metadata": "To compile a dictionary.", 'pos': 'verb', "tags": ["rare", "intransitive"]},
+        {"metadata": "To appear in a dictionary.", 'pos': 'verb', "tags": ["intransitive"]}
       ]
     )
     assert response.status_code == 200

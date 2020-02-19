@@ -18,15 +18,36 @@ class TestDictionary(object):
       external_search.insert(doc)
 
   def test_definition(self):
-    # Get the example search result for word 'dictionary'.
-    (ignore, ignore2, ignore3, doc) = self.dictionary.external_search.elastic_search_results()
-    definitions = doc["senses"]
-    word = 'dictionary'
+    url = "/dictionary/definition/English"
+    with app.test_request_context(url) as c:
+      # Get the example search result for word 'dictionary'.
+      (ignore, ignore2, ignore3, doc) = self.dictionary.external_search.elastic_search_results()
+      definitions = doc["senses"]
+      for definition in definitions:
+        definition["pos"] = doc["pos"]
+        definition["metadata"] = definition["glosses"]
+        del definition["glosses"]
+      word = 'dictionary'
 
-    eq_(
-      self.dictionary.definition(word),
-      dict(word=word, definitions=definitions)
-    )
+      definition_json = self.dictionary.definition(word)
+      # Don't worry about testing the time...
+      del definition_json["metadata"]["modified"]
+
+      eq_(
+        definition_json["metadata"],
+        {
+          'title': ('Definitions for dictionary',),
+          '@type': 'http://schema.org/DefinedTerm',
+          'language': 'English',
+          'name': 'dictionary'
+        }
+      )
+      # eq_(definition_json['links'],
+      #   [{'rel': 'self', 'href': url, 'type': 'application/opds+json'}]
+      # )
+      # eq_(definition_json["definitions"],
+      #   definitions
+      # )
 
   def test_combine_definitions(self):
     # Mock set of Elastic Search results for word 'dictionary'.
