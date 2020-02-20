@@ -10,6 +10,7 @@ from nose.tools import (
 )
 from api import routes
 from .test_controller import TestController
+from api.opds import DictionaryFeed
 
 class TestRoutes(TestController):
   def setup(self):
@@ -39,8 +40,14 @@ class TestRoutes(TestController):
 
     eq_(data['metadata']['name'], 'cat')
     eq_(data['definitions'], [
-      {"metadata": "feline", "tags": [], 'pos': None},
-      {"metadata": "domestic animal", "tags": [], 'pos': None}
+      {"metadata": {
+        "description": "feline", "subject": [], "pos": None, "name": "cat",
+        "@type": DictionaryFeed.SCHEMA_DEFINED_TERM, "language": "english"
+      }},
+      {"metadata": {
+        "description": "domestic animal", "subject": [], "pos": None, "name": "cat",
+        "@type": DictionaryFeed.SCHEMA_DEFINED_TERM, "language": "english"
+      }}
     ])
     assert response.status_code == 200
 
@@ -52,10 +59,27 @@ class TestRoutes(TestController):
 
     eq_(data['metadata']['name'], 'dictionary')
     eq_(data['definitions'], [
-        {"metadata": "To look up in a dictionary.", 'pos': 'verb', "tags": ["transitive"]},
-        {"metadata": "To add to a dictionary.", 'pos': 'verb', "tags": ["transitive"]},
-        {"metadata": "To compile a dictionary.", 'pos': 'verb', "tags": ["rare", "intransitive"]},
-        {"metadata": "To appear in a dictionary.", 'pos': 'verb', "tags": ["intransitive"]}
+        {"metadata": {
+          "description": "To look up in a dictionary.", "pos": "verb", "name": "dictionary",
+          "subject": [{"name": "transitive", "code": "transitive", "schema": "tbd"}],
+          "@type": DictionaryFeed.SCHEMA_DEFINED_TERM, "language": "english"
+        }},
+        {"metadata": {
+          "description": "To add to a dictionary.", "pos": "verb", "name": "dictionary",
+          "subject": [{"name": "transitive", "code": "transitive", "schema": "tbd"}],
+          "@type": DictionaryFeed.SCHEMA_DEFINED_TERM, "language": "english"
+        }},
+        {"metadata": {
+          "description": "To compile a dictionary.", "pos": "verb", "name": "dictionary",
+          "subject": [{"name": "rare", "code": "rare", "schema": "tbd"},
+          {"name": "intransitive", "code": "intransitive", "schema": "tbd"}],
+          "@type": DictionaryFeed.SCHEMA_DEFINED_TERM, "language": "english"
+        }},
+        {"metadata": {
+          "description": "To appear in a dictionary.", "pos": "verb", "name": "dictionary",
+          "subject": [{"name": "intransitive", "code": "intransitive", "schema": "tbd"}],
+          "@type": DictionaryFeed.SCHEMA_DEFINED_TERM, "language": "english"
+        }}
       ]
     )
     assert response.status_code == 200
