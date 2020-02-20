@@ -1,5 +1,3 @@
-from lxml import etree
-from functools import wraps
 from flask import make_response
 from .opds_writer import OPDSFeed
 
