@@ -1,0 +1,32 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.6
+    container_name: dictionary-elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+    networks:
+      - dictionary-net
+    volumes:
+      - ./data:/app/data
+  api:
+    container_name: dictionary-api
+    build: .
+    ports:
+      - 5000:5000
+    environment:
+      - ES_HOST=elasticsearch
+      - ELASTIC_SEARCH_URL=http://elasticsearch:9200
+      - TEST_ELASTIC_SEARCH_URL=http://elasticsearch:9200
+    volumes:
+      - .:/app
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - dictionary-net
+networks:
+  dictionary-net:

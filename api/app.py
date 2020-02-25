@@ -7,4 +7,4 @@ from . import routes
 
 def run():
   debug = True
-  app.run(debug=debug)
+  app.run(debug=debug, host='0.0.0.0')
