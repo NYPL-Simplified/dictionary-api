@@ -1,5 +1,5 @@
 from nose.tools import set_trace
-from api.opds import DictionaryFeed
+from api.dictionary_opds import DictionaryFeed
 from flask import url_for
 
 class Dictionary(object):

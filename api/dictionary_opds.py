@@ -1,5 +1,5 @@
 from nose.tools import set_trace
-from opds.opds_writer import OPDSFeed
+from api.opds.opds_writer import OPDSFeed
 
 class DictionaryFeed(OPDSFeed):
   SCHEMA_DEFINED_TERM = "http://schema.org/DefinedTerm"

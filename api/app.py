@@ -1,10 +1,12 @@
 from flask import Flask
+from nose.tools import set_trace
 
 app = Flask(__name__)
 url = app.config.from_object('config')
+  
+import api.routes
 
-from . import routes
+@app.route("/")
+def main():
+    return "main page for dictionary api"
 
-def run():
-  debug = True
-  app.run(debug=debug, host='0.0.0.0')

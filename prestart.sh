@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Check to see if the container has the Wiktionary data.
-# If it doesn't, download it.
+# If it doesn't, download it in /data.
 DATA_FILE=data/enwiktionary-latest-pages-articles.xml.bz2
 if test -f "$DATA_FILE"; then
   echo "File $DATA_FILE already exists, not downloading the Wiktionary data"
@@ -14,7 +14,7 @@ set -e
 host="http://elasticsearch:9200"
 
 until $(curl --output /dev/null --silent --head --fail "$host"); do
-  printf '.'
+  printf '. waiting on ES!'
   sleep 1
 done
 
@@ -51,6 +51,3 @@ if [ "$response" = "404" ]; then
   echo "Running data ingest"
   ./bin/wik_extract "$DATA_FILE" &
 fi
-
-# Finally, run the app.
-exec python app.py

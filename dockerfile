@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM tiangolo/uwsgi-nginx-flask:python3.6
 
 COPY . /app
 
@@ -6,9 +6,5 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-EXPOSE 5000
-EXPOSE 9200
-
-RUN ["chmod", "+x", "/app/docker-entrypoint.sh"]
-
-ENTRYPOINT ["sh", "/app/docker-entrypoint.sh"]
+# Override the base image's uwsgi.ini file with our own
+ENV UWSGI_INI uwsgi.ini

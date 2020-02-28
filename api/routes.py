@@ -7,10 +7,10 @@ from flask_babel import lazy_gettext as _
 from nose.tools import set_trace
 from api.app import app
 from api.controller.manager import (
-  setup_controllers,
   Manager,
+  setup_controllers
 )
-from opds.feed_response import feed_response
+from api.opds.feed_response import feed_response
 
 @app.before_first_request
 def setup():
