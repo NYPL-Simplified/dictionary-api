@@ -18,16 +18,18 @@ class TestDictionary(object):
       external_search.insert(doc)
 
   def test_definition(self):
-    url = "/dictionary/definition/English"
+    url = "/dictionary/definition/English/"
     with app.test_request_context(url) as c:
       # Get the example search result for word 'dictionary'.
       (ignore, ignore2, ignore3, doc) = self.dictionary.external_search.elastic_search_results()
       definitions = doc["senses"]
       for definition in definitions:
+        # Testing with only one definition per "glosses" so end result is
+        # only a string.
+        definition["metadata"] = definition["glosses"][0]
         definition["pos"] = doc["pos"]
-        definition["metadata"] = definition["glosses"]
         del definition["glosses"]
-      word = 'dictionary'
+      word = "dictionary"
 
       definition_json = self.dictionary.definition(word)
       # Don't worry about testing the time...
@@ -36,21 +38,21 @@ class TestDictionary(object):
       eq_(
         definition_json["metadata"],
         {
-          'title': 'Definitions for dictionary',
-          '@type': 'http://schema.org/DefinedTerm',
-          'language': 'English',
-          'name': 'dictionary'
+          "title": "Definitions for dictionary",
+          "@type": "http://schema.org/DefinedTerm",
+          "language": "English",
+          "name": "dictionary"
         }
       )
-      # eq_(definition_json['links'],
-      #   [{'rel': 'self', 'href': url, 'type': 'application/opds+json'}]
-      # )
-      # eq_(definition_json["definitions"],
-      #   definitions
-      # )
+      eq_(definition_json["links"],
+        [{"rel": "self", "href": url, "type": "application/opds+json"}]
+      )
+      eq_(definition_json["definitions"],
+        definitions
+      )
 
   def test_combine_definitions(self):
-    # Mock set of Elastic Search results for word 'dictionary'.
+    # Mock set of Elastic Search results for word "dictionary".
     (ignore, ignore2, doc, doc2) = self.dictionary.external_search.elastic_search_results()
     example_combined = doc["senses"] + doc2["senses"]
 
