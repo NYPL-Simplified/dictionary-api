@@ -36,7 +36,7 @@ class TestDictionary(object):
       eq_(
         definition_json["metadata"],
         {
-          'title': ('Definitions for dictionary',),
+          'title': 'Definitions for dictionary',
           '@type': 'http://schema.org/DefinedTerm',
           'language': 'English',
           'name': 'dictionary'
