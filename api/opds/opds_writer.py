@@ -18,16 +18,15 @@ pjs.classbuilder.ClassBuilder = MyClassBuilder
 class OPDSFeed(object):
     FEED_TYPE = "application/opds+json"
     SCHEMA_BOOK = "http://schema.org/Book"
-    # Latest supported version according to python_jsonschema_objects's code.
-    JSON_SCHEMA = "http://json-schema.org/draft-04/schema#"
+    JSON_SCHEMA_FILE = "api/schema/simple.json"
 
-    def __init__(self, title, url, schema_file):
+    def __init__(self, title, url):
         self.title = title
         self.url = url
         self.links = [
             dict(rel="self", href=url, type=self.FEED_TYPE)
         ]
-        self.schema = json.load(open(os.path.abspath(schema_file)))
+        self.schema = json.load(open(os.path.abspath(self.JSON_SCHEMA_FILE)))
         self.builder = pjs.ObjectBuilder(self.schema)
 
     def add_metadata(self):

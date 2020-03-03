@@ -6,10 +6,9 @@ import json
 class DictionaryFeed(OPDSFeed):
   SCHEMA_DEFINED_TERM = "http://schema.org/DefinedTerm"
   TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ%z'
-  SCHEMA_FILE = "api/schema/definition.json"
 
   def __init__(self, word, url, language, raw_definitions):
-    super().__init__(word, url, self.SCHEMA_FILE)
+    super().__init__(word, url)
 
     self.language = language
     self.add_metadata()
@@ -31,8 +30,6 @@ class DictionaryFeed(OPDSFeed):
       definitions=self.definitions,
       links=self.links
     )
-    # definition["$id"] = self.url
-    # definition["$schema"] = self.JSON_SCHEMA
 
     return json.loads(definitions.serialize())
 
