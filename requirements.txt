@@ -4,8 +4,9 @@ Flask-Babel
 itsdangerous==1.1.0
 Jinja2==2.10.3
 MarkupSafe==1.1.1
-Werkzeug==0.16.0
+werkzeug
 nose
 wiktextract==0.2.0
 elasticsearch>6.0.0,<7.0.0
 elasticsearch-dsl>6.0.0,<7.0.0
+python_jsonschema_objects

@@ -1,0 +1,42 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.8.6
+    container_name: dictionary-elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+    networks:
+      - dictionary-net
+    # Keep the /data directory around so if the Wiktionary data gets
+    # installed, it won't get installed on subsequent starts.
+    volumes:
+      - ./data:/app/data
+  api:
+    container_name: dictionary-api
+    build: .
+    ports:
+      - 5000:5000
+      - 80:80
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1
+      - ES_HOST=elasticsearch
+      # Note: the name `localhost` refer's to its own container, so
+      # we have to point to the domain of the ES container
+      # called 'elasticsearch'.
+      - ELASTIC_SEARCH_URL=http://elasticsearch:9200
+      - TEST_ELASTIC_SEARCH_URL=http://elasticsearch:9200
+    volumes:
+      - .:/app
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    networks:
+      - dictionary-net
+# Create a separate network for ES and the API containers
+# to talk to each other.
+networks:
+  dictionary-net:
