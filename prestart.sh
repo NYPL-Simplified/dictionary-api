@@ -6,7 +6,7 @@ DATA_FILE=data/enwiktionary-latest-pages-articles.xml.bz2
 if test -f "$DATA_FILE"; then
   echo "File $DATA_FILE already exists, not downloading the Wiktionary data"
 else
-  curl https://dumps.wikimedia.org/enwiktionary/latest/enwiktionary-latest-pages-articles.xml.bz2 -o data/enwiktionary-latest-pages-articles.xml.bz2
+  curl https://dumps.wikimedia.org/enwiktionary/latest/enwiktionary-latest-pages-articles.xml.bz2 -o $DATA_FILE
 fi
 
 # Let's check to see if Elasticsearch is up and running and if the index exists.
