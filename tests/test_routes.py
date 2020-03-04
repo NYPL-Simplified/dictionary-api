@@ -39,8 +39,8 @@ class TestRoutes(TestController):
 
     eq_(data['metadata']['name'], 'cat')
     eq_(data['definitions'], [
-      {"metadata": "feline", "tags": [], 'pos': None},
-      {"metadata": "domestic animal", "tags": [], 'pos': None}
+      {"metadata": "feline", "tags": [], "pos": None},
+      {"metadata": "domestic animal", "tags": [], "pos": None}
     ])
     assert response.status_code == 200
 

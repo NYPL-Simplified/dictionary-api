@@ -1,38 +1,51 @@
 from nose.tools import set_trace
 from api.opds.opds_writer import OPDSFeed
+from functools import reduce
+import json
 
 class DictionaryFeed(OPDSFeed):
   SCHEMA_DEFINED_TERM = "http://schema.org/DefinedTerm"
   TIME_FORMAT = '%Y-%m-%dT%H:%M:%SZ%z'
 
-  def __init__(self, word, url, language, definitions):
+  def __init__(self, word, url, language, raw_definitions):
     super().__init__(word, url)
 
     self.language = language
-    self.feed["definitions"] = []
-
     self.add_metadata()
-    self.add_definitions(definitions)
+    self.definitions = self.update_definitions(raw_definitions)
 
   def add_metadata(self):
     super().add_metadata()
-    self.metadata["title"] = "Definitions for %s" % self.title,
+    self.metadata["title"] = "Definitions for %s" % self.title
     self.metadata["@type"] = self.SCHEMA_DEFINED_TERM
     self.metadata["language"] = self.language
     self.metadata["name"] = self.title
 
   def get_feed(self):
-    return self.feed
+    ns = self.builder.build_classes()
+    definition_builder = ns.Definition
+    definitions = definition_builder(
+      title=self.title,
+      metadata=self.metadata,
+      definitions=self.definitions,
+      links=self.links
+    )
 
-  def add_definitions(self, definitions):
-    '''Adds entries for each definition.
-    :param definitions: a list of definition objects with 'glosses', 'pos',
+    return json.loads(definitions.serialize())
+
+  def update_definitions(self, raw_definitions):
+    '''Adds entries for each definition after normalizing the data.
+    :param raw_definitions: a list of definition objects with 'glosses', 'pos',
       and 'tags' properties coming from Wiktionary.
     '''
-    entries = [self.add_entry(definition) for definition in definitions]
+    defs = [self.update_entry(definition) for definition in raw_definitions]
+    definitions = reduce(lambda x, y: x + y, defs)
 
-  def add_entry(self, definition):
-    '''Adds entries for each definition.
+    return definitions
+
+  def update_entry(self, definition):
+    '''Updates each definition by converting the "glosses" key property
+    into a "metadata" key property.
     :param definition: an objects with 'glosses' and 'tags' properties
     '''
 
@@ -44,7 +57,6 @@ class DictionaryFeed(OPDSFeed):
         tags=definition.get("tags", []),
         pos=definition.get("pos", None)
       )
-      definitions.append(definition_element)
+      definitions += [definition_element]
 
-    self.feed["definitions"] += definitions
-    return definition_element
+    return definitions
