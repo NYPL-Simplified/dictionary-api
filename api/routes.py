@@ -17,6 +17,7 @@ def setup():
   app.manager = Manager()
   setup_controllers(app.manager)
 
+@app.route("/<word>/definition/", defaults={"language": "English"}, methods=["GET"])
 @app.route("/<word>/definition/<language>/", methods=["GET"])
 def definition(word, language):
   feed = app.manager.dictionary_controller.definition(word, language)

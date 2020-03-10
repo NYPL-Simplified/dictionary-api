@@ -1,6 +1,7 @@
 import logging
 from elasticsearch import Elasticsearch
 from nose.tools import set_trace
+from .languages import LanguageCodes, LanguageNames
 
 class ExternalSearchIndex():
   DEFAULT_INDEX = 'dictionary'
@@ -28,9 +29,16 @@ class ExternalSearchIndex():
     self.index(self.DEFAULT_INDEX, self.DEFAULT_TYPE, body=doc)
 
   def search_for(self, word, language="English"):
+    if len(language) == 2 or len(language) == 3:
+      languages = LanguageCodes.english_names[language]
+      language = languages[0]
+
     results = self.search(
       index=self.DEFAULT_INDEX, doc_type=self.DEFAULT_TYPE,
-      body={'query': {'match': { 'word': word}}}
+      body={'query': {'bool': { 'must': [
+        { 'match': { 'word': word }},
+        { 'match': { 'lang': language }},
+      ]}}}
     )
 
     return self.get_hits(results)

@@ -19,6 +19,7 @@ class WiktionaryExtract(object):
             self.url,
             self.wiktextract_word_cb,
             capture_cb=None,
+            # Should be updated to get more languages
             languages=["English"],
             translations=False,
             pronunciations=False,
