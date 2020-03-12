@@ -18,7 +18,7 @@ class TestDictionary(object):
       external_search.insert(doc)
 
   def test_definition(self):
-    url = "/dictionary/definition/English/"
+    url = "/dictionary/definition/en/"
     with app.test_request_context(url) as c:
       # Get the example search result for word 'dictionary'.
       (ignore, ignore2, ignore3, doc) = self.dictionary.external_search.elastic_search_results()
@@ -40,7 +40,7 @@ class TestDictionary(object):
         {
           "title": "Definitions for dictionary",
           "@type": "http://schema.org/DefinedTerm",
-          "language": "English",
+          "language": "en",
           "name": "dictionary"
         }
       )
