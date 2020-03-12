@@ -28,11 +28,7 @@ class ExternalSearchIndex():
   def insert(self, doc):
     self.index(self.DEFAULT_INDEX, self.DEFAULT_TYPE, body=doc)
 
-  def search_for(self, word, language="English"):
-    if len(language) == 2 or len(language) == 3:
-      languages = LanguageCodes.english_names[language]
-      language = languages[0]
-
+  def search_for(self, word, language="en"):
     results = self.search(
       index=self.DEFAULT_INDEX, doc_type=self.DEFAULT_TYPE,
       body={'query': {'bool': { 'must': [

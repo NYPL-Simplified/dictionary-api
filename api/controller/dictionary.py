@@ -1,6 +1,7 @@
 from nose.tools import set_trace
 from api.dictionary_opds import DictionaryFeed
 from flask import url_for
+from ..languages import LanguageCodes
 
 class Dictionary(object):
   def __init__(self, external_search, es_url):
@@ -16,7 +17,10 @@ class Dictionary(object):
     definitions = self.combine_definitions(es_results)
     return definitions
 
-  def definition(self, word, language="English"):
+  def definition(self, word, language="en"):
+    if len(language) != 2 or len(language) != 3:
+      language = self.update_language_code(language)
+    
     definitions = self._search(word, language)
     url = url_for(
       "definition",
@@ -26,6 +30,12 @@ class Dictionary(object):
     feed = DictionaryFeed(word, url, language, definitions)
 
     return feed.get_feed()
+  
+  def update_language_code(self, language):
+    alpha_3 = LanguageCodes.string_to_alpha_3(language)
+    alpha_2 = LanguageCodes.three_to_two[alpha_3]
+
+    return alpha_2
   
   def combine_definitions(self, words):
     '''Each word entry contains a list of "senses" and a "pos" (part-of-speech).
