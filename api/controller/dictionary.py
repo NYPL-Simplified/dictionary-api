@@ -42,7 +42,9 @@ class Dictionary(object):
     Here we combine all "glosses" in every entry's "senses" list, but also add
     the part-of-speech.
     '''
-    definition_objects = [(word['senses'], word.get('pos', None)) for word in words]
+    definition_objects = [
+      (word.get('senses', []), word.get('pos', None)) for word in words
+    ]
     definitions = []
 
     for sense, pos in definition_objects:

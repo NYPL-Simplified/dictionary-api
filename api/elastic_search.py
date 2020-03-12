@@ -50,17 +50,17 @@ class MockExternalSearchIndex(ExternalSearchIndex):
     self.docs = {}
     self.log = logging.getLogger("Mock External Search Index")
   
-  def _key(self, index, doc_type, word):
-    return (index, doc_type, word)
+  def _key(self, index, doc_type, word_lang):
+    return (index, doc_type, word_lang)
   
   def index(self, index, doc_type, body):
-    self.docs[self._key(index, doc_type, body['word'])] = body
+    self.docs[self._key(index, doc_type, (body['word'], body['lang']))] = body
   
   def search(self, index, doc_type, body):
     must = body['query']['bool']['must']
     [word, lang] = [x['match'] for x in must]
-    key = (self.DEFAULT_INDEX, self.DEFAULT_TYPE, word['word'])
-    
+    key = (self.DEFAULT_INDEX, self.DEFAULT_TYPE, (word['word'], lang['lang']))
+
     return [self.docs.get(key, {})]
 
   def get_hits(self, results):
