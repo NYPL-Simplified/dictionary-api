@@ -31,7 +31,6 @@ class WiktionaryExtract(object):
 
     def wiktextract_word_cb(self, word, *args, **kwargs):
         self.clean_word(word)
-        set_trace()
         self.external_search.insert(word)
 
     def clean_word(self, word):
