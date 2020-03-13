@@ -31,17 +31,8 @@ class WiktionaryExtract(object):
 
     def wiktextract_word_cb(self, word, *args, **kwargs):
         self.clean_word(word)
+        set_trace()
         self.external_search.insert(word)
-
-    def update_language(self, language):
-        '''Update the language string into the equivalent language code. This
-        is language value that will go into the Elasticsearch document.
-        '''
-        if len(language) != 2 or len(language) != 3:
-            alpha_3 = LanguageCodes.string_to_alpha_3(language)
-            alpha_2 = LanguageCodes.three_to_two[alpha_3]
-            return alpha_2
-        return language
 
     def clean_word(self, word):
         # Remove all but Arabic and Spanish translations
@@ -58,4 +49,6 @@ class WiktionaryExtract(object):
             if ignore in word:
                 del word[ignore]
 
-        word['lang'] = self.update_language(word['lang'])
+        # Update the language string into the equivalent language code. This
+        # is language value that will go into the Elasticsearch document.
+        word['lang'] = LanguageCodes.normalize_language_code(word['lang'])

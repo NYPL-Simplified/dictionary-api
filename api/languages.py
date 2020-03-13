@@ -608,6 +608,19 @@ zza|||Zaza; Dimili; Dimli; Kirdki; Kirmanjki; Zazaki|zaza; dimili; dimli; kirdki
             return all_names[0]
         return "/".join(all_names)
 
+    @classmethod
+    def normalize_language_code(cls, language):
+        # The language string is a language name.
+        # Convert to a 3-character language code.
+        if len(language) != 2 or len(language) != 3:
+            language = cls.string_to_alpha_3(language)
+        # The language is a three-character code.
+        # Convert to a 2-character language code.
+        if len(language) == 3:
+            language = cls.three_to_two[language]
+
+        # Return the 2-character language code.
+        return language
 
 class LanguageNames(object):
     """Utilities for converting between human-readable language names and codes.

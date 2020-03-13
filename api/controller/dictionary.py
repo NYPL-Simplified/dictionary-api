@@ -18,8 +18,7 @@ class Dictionary(object):
     return definitions
 
   def definition(self, word, language="en"):
-    if len(language) != 2 or len(language) != 3:
-      language = self.update_language_code(language)
+    language = LanguageCodes.normalize_language_code(language)
     
     definitions = self._search(word, language)
     url = url_for(
@@ -30,12 +29,6 @@ class Dictionary(object):
     feed = DictionaryFeed(word, url, language, definitions)
 
     return feed.get_feed()
-  
-  def update_language_code(self, language):
-    alpha_3 = LanguageCodes.string_to_alpha_3(language)
-    alpha_2 = LanguageCodes.three_to_two[alpha_3]
-
-    return alpha_2
   
   def combine_definitions(self, words):
     '''Each word entry contains a list of "senses" and a "pos" (part-of-speech).
