@@ -3,6 +3,7 @@ from nose.tools import set_trace
 import wiktextract
 from datetime import datetime
 from .app import app
+from .languages import LanguageCodes
 
 class WiktionaryExtract(object):
     def __init__(self, url, external_search, wiktextract=wiktextract):
@@ -19,6 +20,7 @@ class WiktionaryExtract(object):
             self.url,
             self.wiktextract_word_cb,
             capture_cb=None,
+            # Should be updated to get more languages
             languages=["English"],
             translations=False,
             pronunciations=False,
@@ -45,3 +47,7 @@ class WiktionaryExtract(object):
         ]:
             if ignore in word:
                 del word[ignore]
+
+        # Update the language string into the equivalent language code. This
+        # is language value that will go into the Elasticsearch document.
+        word['lang'] = LanguageCodes.normalize_language_code(word['lang'])

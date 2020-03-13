@@ -65,7 +65,7 @@ class TestWiktionaryExtract(object):
     all_docs = mockExternalSearchIndex.docs
 
     eq_(all_docs, {
-      ('dictionary', 'words', 'cat'): doc,
+      ('dictionary', 'words', ('cat', 'en')): doc,
     })
 
     # Every time the wiktextract_word_cd function is called, the new
@@ -74,6 +74,6 @@ class TestWiktionaryExtract(object):
     all_docs = mockExternalSearchIndex.docs
 
     eq_(all_docs, {
-      ('dictionary', 'words', 'cat'): doc,
-      ('dictionary', 'words', 'dog'): doc2
+      ('dictionary', 'words', ('cat', 'en')): doc,
+      ('dictionary', 'words', ('dog', 'en')): doc2
     })

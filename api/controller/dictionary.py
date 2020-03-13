@@ -1,6 +1,7 @@
 from nose.tools import set_trace
 from api.dictionary_opds import DictionaryFeed
 from flask import url_for
+from ..languages import LanguageCodes
 
 class Dictionary(object):
   def __init__(self, external_search, es_url):
@@ -16,7 +17,9 @@ class Dictionary(object):
     definitions = self.combine_definitions(es_results)
     return definitions
 
-  def definition(self, word, language="English"):
+  def definition(self, word, language="en"):
+    language = LanguageCodes.normalize_language_code(language)
+    
     definitions = self._search(word, language)
     url = url_for(
       "definition",
@@ -32,7 +35,9 @@ class Dictionary(object):
     Here we combine all "glosses" in every entry's "senses" list, but also add
     the part-of-speech.
     '''
-    definition_objects = [(word['senses'], word.get('pos', None)) for word in words]
+    definition_objects = [
+      (word.get('senses', []), word.get('pos', None)) for word in words
+    ]
     definitions = []
 
     for sense, pos in definition_objects:

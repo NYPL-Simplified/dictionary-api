@@ -38,6 +38,9 @@ class DictionaryFeed(OPDSFeed):
     :param raw_definitions: a list of definition objects with 'glosses', 'pos',
       and 'tags' properties coming from Wiktionary.
     '''
+    if not len(raw_definitions):
+      return []
+
     defs = [self.update_entry(definition) for definition in raw_definitions]
     definitions = reduce(lambda x, y: x + y, defs)
 

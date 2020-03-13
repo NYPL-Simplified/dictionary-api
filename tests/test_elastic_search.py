@@ -23,8 +23,8 @@ class TestExternalSearchIndex():
 
     # Make sure the documents we inserted are all there.
     eq_(self.es.docs, {
-      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, doc['word']): doc,
-      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, doc2['word']): doc2,
+      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, (doc['word'], doc['lang'])): doc,
+      (self.es.DEFAULT_INDEX, self.es.DEFAULT_TYPE, (doc2['word'], doc['lang'])): doc2,
     })
 
   def test_search_for(self):
